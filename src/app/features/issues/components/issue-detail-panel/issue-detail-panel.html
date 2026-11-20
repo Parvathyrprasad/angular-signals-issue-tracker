@@ -1,0 +1,194 @@
+
+<div class="panel-backdrop" (click)="closePanel()">
+  <aside
+    class="detail-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Issue details"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="panel-header">
+      <div>
+        <span class="issue-id">{{ currentIssue().id }}</span>
+        <h2>Issue details</h2>
+      </div>
+
+      <button
+        type="button"
+        class="close-btn"
+        aria-label="Close panel"
+        (click)="closePanel()"
+      >
+        ×
+      </button>
+    </header>
+
+    @if (message()) {
+      <div
+        class="message"
+        [class.success]="messageType() === 'success'"
+        [class.error]="messageType() === 'error'"
+        role="status"
+      >
+        {{ message() }}
+      </div>
+    }
+
+    <div class="panel-content">
+      <div class="detail-section">
+        <label>Issue title</label>
+
+        @if (isEditing()) {
+          <input
+            type="text"
+            [value]="draft().title"
+            (input)="updateTitle($event)"
+            placeholder="Enter issue title"
+          />
+        } @else {
+          <h3 class="issue-title">{{ currentIssue().title }}</h3>
+        }
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-section">
+          <label>Issue ID</label>
+          <p>{{ currentIssue().id }}</p>
+        </div>
+
+        <div class="detail-section">
+          <label>Type</label>
+          <p>{{ currentIssue().type }}</p>
+        </div>
+
+        <div class="detail-section">
+          <label>Priority</label>
+          @if (isEditing()) {
+            <select
+              [value]="draft().priority"
+              (change)="updatePriority($event)"
+            >
+              @for (priority of priorityOptions; track priority) {
+                <option [value]="priority">{{ priority }}</option>
+              }
+            </select>
+          } @else {
+            <p class="value-tag">{{ currentIssue().priority }}</p>
+          }
+        </div>
+
+        <div class="detail-section">
+          <label>Status</label>
+          <p class="value-tag">{{ currentIssue().status }}</p>
+        </div>
+
+        <div class="detail-section">
+          <label>Assignee</label>
+          @if (isEditing()) {
+            <select
+              [value]="draft().assigneeId ?? ''"
+              (change)="updateAssignee($event)"
+            >
+              <option value="">Unassigned</option>
+              @for (member of team(); track member.id) {
+                <option [value]="member.id">{{ member.name }}</option>
+              }
+            </select>
+          } @else {
+            <p>
+              {{
+                team().find(member =>
+                  member.id === currentIssue().assigneeId
+                )?.name ?? 'Unassigned'
+              }}
+            </p>
+          }
+        </div>
+
+        <div class="detail-section">
+          <label>Story points</label>
+          @if (isEditing()) {
+            <select
+              [value]="draft().storyPoints"
+              (change)="updateStoryPoints($event)"
+            >
+              @for (points of storyPointOptions; track points) {
+                <option [value]="points">{{ points }}</option>
+              }
+            </select>
+          } @else {
+            <p>{{ currentIssue().storyPoints }} SP</p>
+          }
+        </div>
+
+        <div class="detail-section">
+          <label>Due date</label>
+          @if (isEditing()) {
+            <input
+              type="date"
+              [value]="draft().dueDate ?? ''"
+              [min]="getToday()"
+              (change)="updateDueDate($event)"
+            />
+          } @else {
+            <p>{{ currentIssue().dueDate ?? 'Not set' }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="detail-section description-section">
+        <label>Description</label>
+        <p>{{ currentIssue().description }}</p>
+      </div>
+
+      @if (isEditing()) {
+        <div class="edit-actions">
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="cancelEditing()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="save-btn"
+            (click)="saveChanges()"
+          >
+            Save changes
+          </button>
+        </div>
+      } @else {
+        <button
+          type="button"
+          class="edit-btn"
+          (click)="startEditing()"
+        >
+          Edit issue
+        </button>
+      }
+
+      <section class="workflow-section">
+        <h3>Change status</h3>
+        <p class="workflow-description">
+          Only permitted workflow transitions are available.
+        </p>
+
+        <div class="workflow-buttons">
+          @for (status of allowedMoves(); track status) {
+            <button
+              type="button"
+              class="status-btn"
+              (click)="changeStatus(status)"
+            >
+              Move to {{ status }}
+            </button>
+          } @empty {
+            <p>No available status transitions.</p>
+          }
+        </div>
+      </section>
+    </div>
+  </aside>
+</div>

@@ -1,0 +1,40 @@
+
+<section class="kanban-column">
+
+  <header class="column-header">
+
+    <div class="column-title">
+      <h2>{{ status() }}</h2>
+
+      <span class="issue-count">
+        {{ issues().length }}
+      </span>
+    </div>
+
+    <div class="column-points">
+      {{ totalPoints() }} story points
+    </div>
+
+  </header>
+
+  <div class="issue-list">
+
+    @for (issue of sortedIssues(); track issue.id) {
+
+      <app-issue-card
+        [issue]="issue"
+        [team]="team()"
+        (selected)="onIssueSelected($event)"
+      />
+
+    } @empty {
+
+      <div class="empty-column">
+        <p>No issues here</p>
+      </div>
+
+    }
+
+  </div>
+
+</section>

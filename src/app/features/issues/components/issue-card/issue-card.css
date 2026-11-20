@@ -1,0 +1,130 @@
+
+:host {
+  display: block;
+}
+
+.issue-card {
+  position: relative;
+  padding: 17px;
+  background: linear-gradient(145deg, #17243d, #111c32);
+  border: 1px solid rgba(148, 170, 205, 0.15);
+  border-radius: 13px;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.issue-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(79, 140, 255, 0.6);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+}
+
+.issue-card:focus-visible {
+  outline: 2px solid #4f8cff;
+  outline-offset: 3px;
+}
+
+.overdue-card {
+  border-left: 4px solid #ff6b81;
+}
+
+.card-top,
+.card-footer,
+.card-tags {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.issue-id {
+  color: #91a4c3;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.3px;
+}
+
+.priority,
+.type-tag,
+.overdue-label {
+  padding: 5px 9px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.critical {
+  background: rgba(255, 90, 110, 0.16);
+  color: #ff8798;
+}
+
+.high {
+  background: rgba(255, 155, 75, 0.16);
+  color: #ffb477;
+}
+
+.medium {
+  background: rgba(245, 184, 75, 0.16);
+  color: #f5c96e;
+}
+
+.low {
+  background: rgba(53, 211, 154, 0.14);
+  color: #5de0ad;
+}
+
+.issue-card h3 {
+  margin: 14px 0;
+  color: #edf3ff;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.type-tag {
+  background: rgba(79, 140, 255, 0.14);
+  color: #91b8ff;
+}
+
+.overdue-label {
+  background: rgba(255, 107, 129, 0.15);
+  color: #ff8798;
+}
+
+.card-footer {
+  margin-top: 18px;
+  color: #9aabc5;
+  font-size: 11px;
+}
+
+.assignee {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(79, 140, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(79, 140, 255, 0.18);
+  color: #a9c8ff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.due-date {
+  color: #91a4c3;
+  text-align: right;
+}
+
+.story-points {
+  margin-top: 12px;
+  color: #9aabc5;
+  font-size: 11px;
+  font-weight: 700;
+}

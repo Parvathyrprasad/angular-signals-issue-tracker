@@ -1,0 +1,165 @@
+
+<main class="board-page">
+
+  <!-- Header -->
+  <header class="page-header">
+
+    <div>
+      <p class="eyebrow">WORKSPACE / PROJECT MANAGEMENT</p>
+      <h1>Issue Tracker</h1>
+      <p class="subtitle">
+        Manage your team's bugs, tasks and stories.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button class="reset-btn" (click)="resetData()">
+        ↻ Reset data
+      </button>
+
+      <button class="new-issue-btn" (click)="openCreateForm()">
+        + New issue
+      </button>
+    </div>
+
+  </header>
+
+  <!-- Loading -->
+  @if (loading()) {
+
+    <div class="state-message">
+      <div class="spinner"></div>
+      <p>Loading your issues...</p>
+    </div>
+
+  } @else if (error()) {
+
+    <div class="error-message">
+      <h2>Unable to load issues</h2>
+      <p>{{ error() }}</p>
+
+      <button (click)="store.resetData()">
+        Try again
+      </button>
+    </div>
+
+  } @else {
+
+    <!-- Summary -->
+    <section class="summary-grid">
+
+      <article class="summary-card">
+        <div class="summary-icon open-icon">◷</div>
+        <div>
+          <p>Open issues</p>
+          <h2>{{ openCount() }}</h2>
+          <span>Issues not yet completed</span>
+        </div>
+      </article>
+
+      <article class="summary-card">
+        <div class="summary-icon overdue-icon">!</div>
+        <div>
+          <p>Overdue issues</p>
+          <h2>{{ overdueCount() }}</h2>
+          <span>Past their due date</span>
+        </div>
+      </article>
+
+      <article class="summary-card">
+        <div class="summary-icon completion-icon">✓</div>
+        <div>
+          <p>Completion</p>
+          <h2>{{ completionPercentage() }}%</h2>
+          <span>Based on completed story points</span>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Filters -->
+    <section class="filter-panel">
+
+      <div class="search-box">
+        <span>⌕</span>
+
+        <input
+          type="search"
+          placeholder="Search by issue ID or title..."
+          [value]="searchInput()"
+          (input)="onSearchChange($event)"
+        />
+      </div>
+
+      <select
+        aria-label="Filter by assignee"
+        (change)="onAssigneeChange($event)"
+      >
+        <option value="all">All assignees</option>
+        <option value="unassigned">Unassigned</option>
+
+        @for (member of team(); track member.id) {
+          <option [value]="member.id">
+            {{ member.name }}
+          </option>
+        }
+      </select>
+
+      <select
+        aria-label="Filter by priority"
+        (change)="onPriorityChange($event)"
+      >
+        <option value="all">All priorities</option>
+
+        @for (priority of priorities; track priority) {
+          <option [value]="priority">
+            {{ priority }}
+          </option>
+        }
+      </select>
+
+      <button class="clear-btn" (click)="clearFilters()">
+        Clear filters
+      </button>
+
+    </section>
+
+    <!-- Result count -->
+    <div class="result-count">
+      Showing <strong>{{ showingCount() }}</strong>
+      of <strong>{{ totalCount() }}</strong> issues
+    </div>
+
+    <!-- Kanban board -->
+    <section class="kanban-board">
+
+      @for (status of statuses; track status) {
+
+        <app-kanban-column
+          [status]="status"
+          [issues]="issuesByStatus()[status]"
+          [team]="team()"
+          (selected)="openIssue($event)"
+        />
+
+      }
+
+    </section>
+
+  }
+
+</main>
+
+
+@if (selectedIssue(); as issue) {
+  <app-issue-detail-panel
+    [issue]="issue"
+    (closed)="closeIssue()"
+  />
+}
+
+@if (showCreateForm()) {
+  <app-issue-form
+    (closed)="closeCreateForm()"
+  />
+}
